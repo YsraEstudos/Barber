@@ -545,9 +545,6 @@ export default function Home() {
                       </div>
                       <div className="service-card-footer">
                         <span className="service-card-price">{priceFromCents(service.price_cents)}</span>
-                        <div className="service-card-add-icon">
-                          <span className="material-symbols-outlined">{isSelected ? "check" : "add"}</span>
-                        </div>
                       </div>
                     </button>
                   );
