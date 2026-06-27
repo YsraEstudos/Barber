@@ -479,7 +479,7 @@ export default function Home() {
           ) : (
             <div style={{ width: "32px" }} /> // Spacer to balance header
           )}
-          <h1>Aureum Grooming</h1>
+          <h1>Agendamento Online</h1>
           <span className="stepCounter">
             {currentStepIndex + 1}/{steps.length}
           </span>
