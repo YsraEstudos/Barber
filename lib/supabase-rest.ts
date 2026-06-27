@@ -1,7 +1,12 @@
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && serviceRoleKey);
+export const isSupabaseConfigured = Boolean(
+  supabaseUrl &&
+    serviceRoleKey &&
+    supabaseUrl !== "https://seu-projeto.supabase.co" &&
+    serviceRoleKey !== "sua-service-role-key"
+);
 
 type QueryParams = Record<string, string | number | boolean | undefined>;
 

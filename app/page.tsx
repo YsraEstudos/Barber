@@ -423,7 +423,7 @@ export default function Home() {
     return (
       <main className="successShell">
         <section className="successPanel animate-fade-up" aria-labelledby="success-title">
-          <div className="brandMark-success">B</div>
+          <div className="brandMark-success">A</div>
           <span className="statusPill">Agendamento confirmado</span>
           <h1 id="success-title">Horário Reservado</h1>
           <p className="subtitle">Seu agendamento foi registrado com sucesso!</p>
@@ -479,7 +479,7 @@ export default function Home() {
           ) : (
             <div style={{ width: "32px" }} /> // Spacer to balance header
           )}
-          <h1>Book Appointment</h1>
+          <h1>Aureum Grooming</h1>
           <span className="stepCounter">
             {currentStepIndex + 1}/{steps.length}
           </span>
@@ -518,7 +518,7 @@ export default function Home() {
               ) : (
                 services.map((service) => {
                   const isSelected = service.id === serviceId;
-                  const isPremium = service.id === "combo-vip" || service.price_cents > 10000;
+                  const isPremium = service.id === "combo-vip" || service.price_cents >= 7000;
                   return (
                     <button
                       type="button"
