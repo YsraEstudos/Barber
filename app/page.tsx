@@ -581,9 +581,6 @@ export default function Home() {
                       <h3>{barber.name}</h3>
                       <p>{barber.bio || "Profissional especialista"}</p>
                       <div className="barber-card-meta">
-                        <span className="material-symbols-outlined star">star</span>
-                        <span className="rating">4.9</span>
-                        <span className="separator">•</span>
                         <span className="status">Disponível hoje</span>
                       </div>
                     </div>
