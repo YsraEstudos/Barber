@@ -2,6 +2,7 @@ export type Barber = {
   id: string;
   name: string;
   bio?: string | null;
+  avatar_url?: string | null;
   active: boolean;
 };
 
