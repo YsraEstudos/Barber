@@ -1,0 +1,188 @@
+/* --- MODAL DE DETALHES DO AGENDAMENTO --- */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--spacing-md);
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modalContent {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--shadow-gold);
+  overflow: hidden;
+  animation: modalScaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.modalHeader {
+  background: var(--surface-container);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalHeader h3 {
+  font-family: var(--font-montserrat);
+  font-size: 18px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.closeModalBtn {
+  background: transparent;
+  border: none;
+  color: var(--on-surface-variant);
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeModalBtn:hover {
+  color: var(--on-surface);
+}
+
+.modalBody {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.infoRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.infoRow span.material-symbols-outlined {
+  color: var(--primary);
+  font-size: 22px;
+  margin-top: 2px;
+}
+
+.infoText label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin-bottom: 2px;
+  letter-spacing: 0.05em;
+}
+
+.infoText p {
+  font-size: 15px;
+  color: var(--on-surface);
+}
+
+.notesBox {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-md);
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  font-style: italic;
+}
+
+.whatsappActionBtn {
+  background: #25d366;
+  color: white;
+  border: none;
+  border-radius: var(--radius-default);
+  padding: var(--spacing-md);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+}
+
+.whatsappActionBtn:hover {
+  background: #20ba5a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.35);
+}
+
+/* Botões de Ação de Status */
+.statusActionsLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: 0.05em;
+}
+
+.statusBtnGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.statusActionBtn {
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-default);
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: var(--on-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.statusActionBtn:hover {
+  background: var(--surface-container-high);
+}
+
+.statusActionBtn.active-status {
+  border-color: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.statusActionBtn.confirmado { color: var(--primary); border-color: rgba(242, 202, 80, 0.3); }
+.statusActionBtn.confirmado.active-status { background: rgba(242, 202, 80, 0.1); }
+
+.statusActionBtn.em_atendimento { color: #4fc3f7; border-color: rgba(79, 195, 247, 0.3); }
+.statusActionBtn.em_atendimento.active-status { background: rgba(79, 195, 247, 0.1); }
+
+.statusActionBtn.finalizado { color: #81c784; border-color: rgba(129, 199, 132, 0.3); }
+.statusActionBtn.finalizado.active-status { background: rgba(129, 199, 132, 0.1); }
+
+.statusActionBtn.cancelado { color: var(--error); border-color: rgba(255, 180, 171, 0.3); }
+.statusActionBtn.cancelado.active-status { background: rgba(255, 180, 171, 0.1); }
+
+.statusActionBtn.nao_compareceu { color: #ffb74d; border-color: rgba(255, 183, 77, 0.3); }
+.statusActionBtn.nao_compareceu.active-status { background: rgba(255, 183, 77, 0.1); }

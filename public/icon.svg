@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="50%" stop-color="#F2CA50" />
+      <stop offset="100%" stop-color="#C5A028" />
+    </linearGradient>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#242323" />
+      <stop offset="100%" stop-color="#121212" />
+    </radialGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bg)" stroke="url(#gold)" stroke-width="8" />
+  <!-- Logo Icon (Scissors & Comb / Barber Pole representation) -->
+  <g transform="translate(128, 128)">
+    <!-- Barber Shears (Scissors) -->
+    <path d="M 64,80 C 64,80 72,130 110,160 M 192,80 C 192,80 184,130 146,160" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" fill="none" />
+    <!-- Comb -->
+    <path d="M 40,110 L 216,110 M 50,110 L 50,140 M 70,110 L 70,140 M 90,110 L 90,140 M 110,110 L 110,140 M 130,110 L 130,140 M 150,110 L 150,140 M 170,110 L 170,140 M 190,110 L 190,140 M 210,110 L 210,140" stroke="url(#gold)" stroke-width="8" stroke-linecap="round" />
+    <!-- Stylized Crown / Letter 'A' -->
+    <path d="M 60,220 L 128,80 L 196,220" stroke="url(#gold)" stroke-width="16" stroke-linejoin="round" stroke-linecap="round" fill="none" />
+    <path d="M 90,170 L 166,170" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" />
+    <!-- Gold Dot at the top -->
+    <circle cx="128" cy="64" r="14" fill="url(#gold)" />
+  </g>
+</svg>

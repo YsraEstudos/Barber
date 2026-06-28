@@ -1,0 +1,66 @@
+/* --- TOAST DE NOTIFICAÇÃO REALTIME --- */
+.toastNotification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(20, 19, 19, 0.95);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), var(--shadow-gold-large);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  max-width: 360px;
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toastIcon {
+  color: var(--primary);
+  animation: pulseGold 1.5s infinite;
+}
+
+.toastBody h4 {
+  font-family: var(--font-montserrat);
+  font-size: 14px;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.toastBody p {
+  font-size: 13px;
+  color: var(--on-surface);
+}
+
+.toastBody span {
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  display: block;
+  margin-top: 4px;
+}
+
+/* Keyframes de Animações Gerais */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes pulseGold {
+  0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(242, 202, 80, 0)); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(242, 202, 80, 0.5)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(242, 202, 80, 0)); }
+}

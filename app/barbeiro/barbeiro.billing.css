@@ -1,0 +1,80 @@
+/* --- ABA 4: FATURAMENTO --- */
+.billingMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .billingMetrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.metricCard {
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-lg);
+  text-align: center;
+  box-shadow: var(--shadow-gold);
+}
+
+.metricCard label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.metricCard p {
+  font-family: var(--font-montserrat);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.billingChartArea {
+  background: rgba(28, 27, 27, 0.6);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+}
+
+.billingChartTitle {
+  font-family: var(--font-montserrat);
+  font-size: 15px;
+  text-transform: uppercase;
+  color: var(--on-surface);
+  margin-bottom: var(--spacing-md);
+}
+
+.rankingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.rankingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rankingItemName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rankingItemValue {
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--primary);
+}

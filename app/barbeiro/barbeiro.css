@@ -1,0 +1,7 @@
+@import "./barbeiro.base.css";
+@import "./barbeiro.agenda.css";
+@import "./barbeiro.modal.css";
+@import "./barbeiro.services.css";
+@import "./barbeiro.schedule.css";
+@import "./barbeiro.billing.css";
+@import "./barbeiro.toast.css";

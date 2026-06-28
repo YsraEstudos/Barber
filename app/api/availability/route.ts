@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fallbackServices } from "@/lib/fallback-data";
-import { buildSlotsForDate, getNextDates } from "@/lib/scheduling";
-import { isSupabaseConfigured, selectRows } from "@/lib/supabase-rest";
+import { buildSlotsForDate, getNextDates, parseLocalDate } from "@/lib/scheduling";
+import { callRpc, isSupabaseConfigured, selectRows } from "@/lib/supabase-rest";
 import type { Service, Slot } from "@/lib/types";
 
 type AvailabilityRow = {
@@ -11,7 +11,8 @@ type AvailabilityRow = {
   slot_interval_minutes: number;
 };
 
-type AppointmentRow = {
+type BookedSlotRow = {
+  appointment_date: string;
   start_time: string;
   end_time: string;
 };
@@ -27,7 +28,7 @@ function fallbackSlots(serviceId: string) {
       service.duration_minutes,
       [
         {
-          weekday: new Date(`${date}T12:00:00`).getDay(),
+          weekday: parseLocalDate(date).getDay(),
           start_time: "09:00:00",
           end_time: "18:00:00",
           slot_interval_minutes: 30,
@@ -46,6 +47,14 @@ export async function GET(request: NextRequest) {
   if (!serviceId || !barberId) {
     return NextResponse.json(
       { message: "Servico e barbeiro sao obrigatorios." },
+      { status: 400 },
+    );
+  }
+
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(serviceId) || !uuidRegex.test(barberId)) {
+    return NextResponse.json(
+      { message: "Identificador de serviço ou barbeiro inválido." },
       { status: 400 },
     );
   }
@@ -76,25 +85,30 @@ export async function GET(request: NextRequest) {
     order: "weekday.asc,start_time.asc",
   });
 
-  const days = await Promise.all(
-    getNextDates(14).map(async (date) => {
-      const appointments = await selectRows<AppointmentRow>("appointments", {
-        select: "start_time,end_time",
-        barber_id: `eq.${barberId}`,
-        appointment_date: `eq.${date}`,
-        status: "not.in.(cancelado,nao_compareceu)",
-      });
+  const dates = getNextDates(14);
+  const bookedSlots = await callRpc<BookedSlotRow[]>("get_public_booked_slots", {
+    p_barber_id: barberId,
+    p_start_date: dates[0],
+    p_end_date: dates[dates.length - 1],
+  });
 
-      const slots: Slot[] = buildSlotsForDate(
-        date,
-        service.duration_minutes,
-        availability,
-        appointments,
-      );
+  const bookedSlotsByDate = new Map<string, BookedSlotRow[]>();
+  bookedSlots.forEach((slot) => {
+    const list = bookedSlotsByDate.get(slot.appointment_date) ?? [];
+    list.push(slot);
+    bookedSlotsByDate.set(slot.appointment_date, list);
+  });
 
-      return { date, slots };
-    }),
-  );
+  const days = dates.map((date) => {
+    const slots: Slot[] = buildSlotsForDate(
+      date,
+      service.duration_minutes,
+      availability,
+      bookedSlotsByDate.get(date) ?? [],
+    );
+
+    return { date, slots };
+  });
 
   return NextResponse.json({ configured: true, days });
 }

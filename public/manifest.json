@@ -1,0 +1,19 @@
+{
+  "name": "Aureum Grooming - Painel do Barbeiro",
+  "short_name": "Aureum Barber",
+  "description": "Painel de controle e agendamentos da Barbearia Aureum Grooming",
+  "start_url": "/barbeiro",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#f2ca50",
+  "orientation": "portrait-primary",
+  "scope": "/barbeiro",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

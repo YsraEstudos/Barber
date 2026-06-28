@@ -1,30 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addMinutes, buildSlotsForDate } from "@/lib/scheduling";
-import { insertRows, isSupabaseConfigured, selectRows } from "@/lib/supabase-rest";
-import type { BookingPayload, BookingSummary, Barber, Service } from "@/lib/types";
+import { callRpc, isSupabaseConfigured } from "@/lib/supabase-rest";
+import type { BookingPayload, BookingSummary } from "@/lib/types";
+import { onlyDigits } from "@/app/_lib/booking-formatters";
+import { getErrorMessage } from "@/app/api/_lib/api-errors";
+import { sendWhatsAppMessage } from "@/lib/whatsapp";
 
-type ClientRow = {
-  id: string;
-  name: string;
+type BookingRpcRow = {
+  appointment_id: string;
+  client_name: string;
   whatsapp: string;
-};
-
-type AvailabilityRow = {
-  weekday: number;
+  service_name: string;
+  barber_name: string;
+  appointment_date: string;
   start_time: string;
   end_time: string;
-  slot_interval_minutes: number;
+  notes: string | null;
 };
-
-type AppointmentRow = {
-  id: string;
-  start_time: string;
-  end_time: string;
-};
-
-function onlyDigits(value: string) {
-  return value.replace(/\D/g, "");
-}
 
 function validatePayload(payload: BookingPayload) {
   const required = [
@@ -47,6 +38,8 @@ function validatePayload(payload: BookingPayload) {
   return null;
 }
 
+
+
 export async function POST(request: NextRequest) {
   const payload = (await request.json()) as BookingPayload;
   const validationMessage = validatePayload(payload);
@@ -62,101 +55,65 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const [services, barbers] = await Promise.all([
-    selectRows<Service>("services", {
-      select: "id,name,description,duration_minutes,price_cents,active",
-      id: `eq.${payload.serviceId}`,
-      active: "eq.true",
-      limit: 1,
-    }),
-    selectRows<Barber>("barbers", {
-      select: "id,name,bio,active",
-      id: `eq.${payload.barberId}`,
-      active: "eq.true",
-      limit: 1,
-    }),
-  ]);
+  try {
+    const rows = await callRpc<BookingRpcRow[]>("create_public_booking", {
+      p_service_id: payload.serviceId,
+      p_barber_id: payload.barberId,
+      p_date: payload.date,
+      p_start_time: payload.startTime,
+      p_client_name: payload.clientName,
+      p_whatsapp: onlyDigits(payload.whatsapp),
+      p_notes: payload.notes?.trim() || null,
+    });
+    const appointment = rows[0];
 
-  const service = services[0];
-  const barber = barbers[0];
+    if (!appointment) {
+      return NextResponse.json(
+        { message: "Nao foi possivel criar o agendamento." },
+        { status: 500 },
+      );
+    }
 
-  if (!service || !barber) {
-    return NextResponse.json(
-      { message: "Servico ou barbeiro indisponivel." },
-      { status: 404 },
-    );
+    const summary: BookingSummary = {
+      appointmentId: appointment.appointment_id,
+      clientName: appointment.client_name,
+      whatsapp: appointment.whatsapp,
+      serviceName: appointment.service_name,
+      barberName: appointment.barber_name,
+      date: appointment.appointment_date,
+      startTime: appointment.start_time,
+      endTime: appointment.end_time,
+      notes: appointment.notes,
+    };
+
+    // Send WhatsApp confirmation asynchronously
+    const cleanDate = appointment.appointment_date.split("-").reverse().join("/");
+    const cleanTime = appointment.start_time.slice(0, 5);
+    const messageText =
+      `Olá, ${appointment.client_name}! Seu agendamento foi *confirmado* na Aureum Grooming.\n\n` +
+      `✂️ *Serviço:* ${appointment.service_name}\n` +
+      `💈 *Barbeiro:* ${appointment.barber_name}\n` +
+      `📅 *Data:* ${cleanDate}\n` +
+      `⏰ *Horário:* ${cleanTime}\n\n` +
+      `Te esperamos lá!`;
+
+    sendWhatsAppMessage(appointment.whatsapp, messageText).catch((err) => {
+      console.error("Falha ao enviar notificação de WhatsApp:", err);
+    });
+
+    return NextResponse.json(summary, { status: 201 });
+  } catch (error) {
+    const message = getErrorMessage(error);
+    let status = 500;
+    if (message.toLowerCase().includes("invalido") || message.toLowerCase().includes("inválido")) {
+      status = 400;
+    } else if (
+      message.toLowerCase().includes("indisponivel") ||
+      message.toLowerCase().includes("indisponível") ||
+      message.toLowerCase().includes("conflito")
+    ) {
+      status = 409;
+    }
+    return NextResponse.json({ message }, { status });
   }
-
-  const availability = await selectRows<AvailabilityRow>("availability", {
-    select: "weekday,start_time,end_time,slot_interval_minutes",
-    barber_id: `eq.${payload.barberId}`,
-    active: "eq.true",
-  });
-  const appointments = await selectRows<AppointmentRow>("appointments", {
-    select: "id,start_time,end_time",
-    barber_id: `eq.${payload.barberId}`,
-    appointment_date: `eq.${payload.date}`,
-    status: "not.in.(cancelado,nao_compareceu)",
-  });
-
-  const availableSlots = buildSlotsForDate(
-    payload.date,
-    service.duration_minutes,
-    availability,
-    appointments,
-  );
-  const chosenSlot = availableSlots.find(
-    (slot) => slot.start_time.slice(0, 5) === payload.startTime.slice(0, 5),
-  );
-
-  if (!chosenSlot) {
-    return NextResponse.json(
-      { message: "Esse horario acabou de ficar indisponivel." },
-      { status: 409 },
-    );
-  }
-
-  const normalizedWhatsapp = onlyDigits(payload.whatsapp);
-  const existingClients = await selectRows<ClientRow>("clients", {
-    select: "id,name,whatsapp",
-    whatsapp: `eq.${normalizedWhatsapp}`,
-    limit: 1,
-  });
-
-  const client =
-    existingClients[0] ??
-    (
-      await insertRows<ClientRow>("clients", {
-        name: payload.clientName.trim(),
-        whatsapp: normalizedWhatsapp,
-      })
-    )[0];
-
-  const endTime = addMinutes(chosenSlot.start_time, service.duration_minutes);
-  const appointment = (
-    await insertRows<AppointmentRow>("appointments", {
-      client_id: client.id,
-      barber_id: barber.id,
-      service_id: service.id,
-      appointment_date: payload.date,
-      start_time: chosenSlot.start_time,
-      end_time: endTime,
-      status: "confirmado",
-      notes: payload.notes?.trim() || null,
-    })
-  )[0];
-
-  const summary: BookingSummary = {
-    appointmentId: appointment.id,
-    clientName: client.name,
-    whatsapp: normalizedWhatsapp,
-    serviceName: service.name,
-    barberName: barber.name,
-    date: payload.date,
-    startTime: chosenSlot.start_time,
-    endTime,
-    notes: payload.notes?.trim() || null,
-  };
-
-  return NextResponse.json(summary, { status: 201 });
 }

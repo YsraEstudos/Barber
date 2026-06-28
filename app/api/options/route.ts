@@ -12,22 +12,30 @@ export async function GET() {
     });
   }
 
-  const [services, barbers] = await Promise.all([
-    selectRows<Service>("services", {
-      select: "id,name,description,duration_minutes,price_cents,active",
-      active: "eq.true",
-      order: "price_cents.asc",
-    }),
-    selectRows<Barber>("barbers", {
-      select: "id,name,bio,active",
-      active: "eq.true",
-      order: "name.asc",
-    }),
-  ]);
+  try {
+    const [services, barbers] = await Promise.all([
+      selectRows<Service>("services", {
+        select: "id,name,description,duration_minutes,price_cents,active",
+        active: "eq.true",
+        order: "price_cents.asc",
+      }),
+      selectRows<Barber>("barbers", {
+        select: "id,name,bio,avatar_url,active",
+        active: "eq.true",
+        order: "name.asc",
+      }),
+    ]);
 
-  return NextResponse.json({
-    configured: true,
-    services: services.length ? services : fallbackServices,
-    barbers: barbers.length ? barbers : fallbackBarbers,
-  });
+    return NextResponse.json({
+      configured: true,
+      services,
+      barbers,
+    });
+  } catch (error) {
+    console.error("Erro ao carregar opções do Supabase:", error);
+    return NextResponse.json(
+      { message: "Não foi possível carregar as opções do banco de dados." },
+      { status: 500 },
+    );
+  }
 }

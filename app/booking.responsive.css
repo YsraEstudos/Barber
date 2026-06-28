@@ -1,0 +1,86 @@
+/* Desktop Styles */
+@media (min-width: 900px) {
+  .bookingShell {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--spacing-2xl) clamp(32px, 8vw, 120px);
+  }
+
+  .bookingShell::before {
+    display: block;
+    width: min(42vw, 560px);
+    color: var(--on-surface);
+    content: "Aureum Grooming";
+    font-family: var(--font-montserrat);
+    font-size: clamp(3.4rem, 7vw, 6rem);
+    font-weight: 800;
+    line-height: 0.95;
+    margin-right: var(--spacing-xl);
+    position: relative;
+    z-index: 10;
+  }
+
+  .bookingShell::after {
+    display: block;
+    position: absolute;
+    left: clamp(32px, 8vw, 120px);
+    top: calc(50% + 120px);
+    width: min(38vw, 480px);
+    color: var(--on-surface-variant);
+    content: "Agendamento mobile-first para cortes, barba e acabamento com uma experiência escura, calma e premium.";
+    font-size: 16px;
+    line-height: 1.6;
+    z-index: 10;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    background-image: 
+      linear-gradient(180deg, rgba(19, 19, 19, 0.6) 0%, rgba(19, 19, 19, 0.95) 300px, #131313 100%),
+      url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqCnjuuq9AeDc88Dj7ep5uYPNxgXRh_feo6qD15_EbVXrGFOEhtHCtsGl-ddmPbVMCWN4hse8Y6QlvOBB7RvRNFQP4biS1d8DuEN-vaMwuLSJTxrsO1GQH-yvPFmz2SVsxClQljGfJ4_Hbj6RpQANYob51wDzI0V6QZcKuHwJtWPM2IrKzBvAk_b7U_ngnsHYk8ZyiRewQYLxsXtbwPI4snwPX8esSIcPCDWMJbw6mhS1_QTyJZ3FvWWfYQli1TiYSJO_iEvmgnvk');
+  }
+
+  .bookingShell, .successShell {
+    padding: 0;
+  }
+
+  .bookingCard {
+    max-width: 100%;
+    height: 100vh;
+    height: 100svh;
+    border-radius: 0;
+    border: none;
+  }
+
+  .successPanel {
+    max-width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    border-radius: 0;
+    border: none;
+  }
+  
+  .time-slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 360px) {
+  .stepIntro h2 {
+    font-size: 22px;
+  }
+  .calendar-grid {
+    gap: 4px;
+  }
+  .calendar-day-btn {
+    font-size: 13px;
+  }
+  .time-slots-grid {
+    gap: 8px;
+  }
+  .time-slot-btn {
+    font-size: 13px;
+    padding: 10px 0;
+  }
+}

@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: evolution-db
+    environment:
+      - POSTGRES_USER=${EVOLUTION_DB_USER:-evolution}
+      - POSTGRES_PASSWORD=${EVOLUTION_DB_PASSWORD:-change-me-local}
+      - POSTGRES_DB=${EVOLUTION_DB_NAME:-evolution_db}
+    volumes:
+      - ./evolution-db-data:/var/lib/postgresql/data
+    restart: always
+
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: evolution-api
+    ports:
+      - "8082:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SERVER_PORT=8080
+      - SERVER_URL=http://localhost:8082
+      
+      # Authentication
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=${EVOLUTION_API_KEY:-change-me-local}
+      
+      # Database config (Postgres)
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://${EVOLUTION_DB_USER:-evolution}:${EVOLUTION_DB_PASSWORD:-change-me-local}@postgres:5432/${EVOLUTION_DB_NAME:-evolution_db}?schema=public
+      - DATABASE_SAVE_DATA_INSTANCE=true
+      - DATABASE_SAVE_DATA_NEW_MESSAGE=false
+      - DATABASE_SAVE_MESSAGE_CONN=false
+      - DATABASE_SAVE_MESSAGE_SENDED=false
+      
+      # Disable Redis cache for simpler local setup
+      - CACHE_REDIS_ENABLED=false
+    volumes:
+      - ./evolution-data:/data
+    restart: always
+
+  evolution-manager:
+    image: evoapicloud/evolution-manager:latest
+    container_name: evolution-manager
+    ports:
+      - "8083:80"
+    volumes:
+      - ./evolution-manager-nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+    restart: always

@@ -52,13 +52,18 @@ export function getNextDates(days = 14) {
   return dates;
 }
 
+export function parseLocalDate(dateStr: string) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
 export function buildSlotsForDate(
   date: string,
   durationMinutes: number,
   availability: AvailabilityRow[],
   appointments: AppointmentRow[],
 ) {
-  const weekday = new Date(`${date}T12:00:00`).getDay();
+  const weekday = parseLocalDate(date).getDay();
   const windows = availability.filter((item) => item.weekday === weekday);
   const slots: Slot[] = [];
   const now = new Date();
@@ -69,7 +74,12 @@ export function buildSlotsForDate(
 
     while (toMinutes(addMinutes(cursor, durationMinutes)) <= toMinutes(window.end_time)) {
       const endTime = addMinutes(cursor, durationMinutes);
-      const startsInPast = new Date(`${date}T${cursor}`) <= now;
+      
+      const [hours, mins] = cursor.split(":").map(Number);
+      const slotDate = parseLocalDate(date);
+      slotDate.setHours(hours, mins, 0, 0);
+      const startsInPast = slotDate <= now;
+
       const busy = appointments.some((appointment) =>
         overlaps(cursor, endTime, appointment.start_time, appointment.end_time),
       );

@@ -1,0 +1,156 @@
+/* Layout Containers */
+.bookingShell, .successShell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: var(--margin-mobile);
+  position: relative;
+}
+
+.bookingCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  height: 780px;
+  height: min(840px, calc(100svh - 40px));
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
+  background: rgba(19, 19, 19, 0.9);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), var(--shadow-gold);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ambient glow background effects */
+.ambient-glow {
+  position: absolute;
+  top: 25%;
+  left: 10%;
+  width: 400px;
+  height: 400px;
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: var(--radius-full);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header */
+.mobileTopbar {
+  display: flex;
+  align-items: center;
+  height: calc(64px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  padding-left: var(--margin-mobile);
+  padding-right: var(--margin-mobile);
+  border-bottom: 1px solid var(--line);
+  background: rgba(19, 19, 19, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.mobileTopbar .back-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  margin-left: -8px;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobileTopbar .back-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mobileTopbar .back-btn:active {
+  transform: scale(0.95);
+}
+
+.mobileTopbar h1 {
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.mobileTopbar .stepCounter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: var(--radius-full);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Progress bar indicators */
+.progressTrack {
+  height: 3px;
+  background: var(--surface-container-high);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.progressTrack div {
+  height: 100%;
+  background: var(--primary-container);
+  box-shadow: 0 0 10px var(--primary);
+  transition: width 0.3s ease;
+}
+
+/* Wizard step container */
+.stepScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: var(--spacing-lg) var(--margin-mobile);
+}
+
+.stepIntro {
+  margin-bottom: var(--spacing-lg);
+}
+
+.stepKicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--on-surface-variant);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  display: block;
+}
+
+.stepIntro h2 {
+  font-size: 26px;
+  color: var(--on-surface);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.2;
+}
+
+.stepIntro p {
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+}
